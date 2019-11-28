@@ -25,7 +25,7 @@ async function main() {
     try {
       console.log("Abrindo link");
 
-      await openBrowser();
+      await openBrowser({ headless: false });
       await goto(url);
 
       //
@@ -41,7 +41,9 @@ async function main() {
       await write(user.email, into(textBox(near("E-mail"))));
       await radioButton(
         user.has_attended,
-        near("Já participou de outras edições do Impulso Meetups?")
+        near("Já participou de outras edições do Impulso Meetups?", {
+          offset: 100
+        })
       ).select();
       await write(user.role, into(textBox(near("Ocupação"))));
       await write(
@@ -52,7 +54,10 @@ async function main() {
       await dropDown(near("Nível de senioridade")).select(user.level);
       await write(user.city, into(textBox(near("Cidade"))));
       await write(user.uf, into(textBox(near("UF"))));
-      await radioButton(user.gender, near("Identidade de Gênero")).select();
+      await radioButton(
+        user.gender,
+        near("Identidade de Gênero", { offset: 100 })
+      ).select();
 
       console.log("Preenche confirmação");
       await dropDown(near("Copiar informações")).select("Inscrição nº 1");
@@ -63,6 +68,8 @@ async function main() {
 
       console.log("Aguardando confirmação");
       await waitFor(async () => await $(".success-title").exists());
+
+      
     } catch (error) {
       console.error(error);
     } finally {
